@@ -8,6 +8,35 @@ Este processo foi validado ponta a ponta no primeiro cliente ("Cliente Zero"). O
 valores concretos (domínio, nome de projeto, tokens) pertencem à configuração de cada
 subprojeto de cliente, nunca a este arquivo.
 
+## dist/ é snapshot, não build target
+
+`dist/` do primeiro cliente está versionado no Git como **fotografia exata do que está
+publicado**, não como produto de um passo de build automatizado. A fonte editável
+original foi produzida pelo Open Design e vive dentro do diretório de dados interno
+dele (`open-design/.od/projects/...`) — deliberadamente **não** versionada e **não**
+referenciada programaticamente por nenhum script deste repositório. Não criar um
+`build.js` que leia diretamente de `.od/projects/...`: essa é implementação interna da
+ferramenta, não um contrato estável da nossa arquitetura. Quando houver uma nova edição
+relevante (ou o Cliente 1), promover a fonte aprovada para uma estrutura explícita
+(`sites/<cliente>/` ou `clients/<cliente>/site/`) e só então construir um build
+determinístico entre fonte e `dist/`.
+
+Ao validar se um `dist/` corresponde à produção, comparar contra a URL `*.pages.dev`
+(artefato puro, sem transformações de borda) — não necessariamente contra o domínio
+custom, que pode ter camadas adicionais da própria Cloudflare aplicadas na borda (ver
+nota sobre WebMCP abaixo).
+
+## WebMCP (edge transformation da Cloudflare)
+
+Zonas com o recurso "Agent Readiness → WebMCP" habilitado no painel Cloudflare injetam
+um `<script src="/.webmcp/bridge.js">` em toda resposta HTML servida pelo **domínio
+customizado** — isso acontece na borda, não altera o `dist/` nem o artefato em
+`*.pages.dev`. Não é bug, não é corrupção do build, não requer ação. Não copiar esse
+script para o repositório nem tentar reproduzi-lo no `dist/`. Se um cliente futuro quiser
+WebMCP de propósito (ações estruturadas tipo `get_capabilities()`), isso deve ser uma
+decisão de produto deliberada, documentada como configuração de infraestrutura daquele
+cliente — não algo herdado silenciosamente de um default de zona.
+
 ## Configuração por cliente
 
 Cada subprojeto de cliente define, fora deste repositório de regras:
