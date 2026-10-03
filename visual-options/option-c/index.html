@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente Zero - Premium Direction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color palette: sophisticated dark with subtle depth */
+            --color-bg-primary: #060708;
+            --color-bg-secondary: #0f1012;
+            --color-bg-tertiary: #191a1c;
+            --color-bg-accent: #232529;
+
+            --color-text-primary: #f8f9fa;
+            --color-text-secondary: #d4dae6;
+            --color-text-tertiary: #8a92a0;
+
+            --color-accent-primary: #7170ff;
+            --color-accent-secondary: #5a59d4;
+
+            --color-border: rgba(255, 255, 255, 0.06);
+            --color-border-light: rgba(255, 255, 255, 0.08);
+
+            /* Typography */
+            --font-family: 'system-ui', -apple-system, sans-serif;
+            --font-mono: 'SF Mono', Monaco, monospace;
+
+            /* Spacing: 8px base */
+            --sp-xs: 0.5rem;
+            --sp-sm: 1rem;
+            --sp-md: 1.5rem;
+            --sp-lg: 2rem;
+            --sp-xl: 3rem;
+            --sp-2xl: 4rem;
+
+            /* Shadows: subtle layering */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
+
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(180deg, var(--color-bg-primary) 0%, #0a0b0d 100%);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(6, 7, 8, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--sp-sm) var(--sp-lg);
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--color-text-primary);
+        }
+
+        nav {
+            display: flex;
+            gap: var(--sp-lg);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--color-text-tertiary);
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--color-accent-primary);
+        }
+
+        /* Hero Section: Text-Dominant Center */
+        .hero {
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sp-2xl) var(--sp-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle background glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(113, 112, 255, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        /* Hero content: text block */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 720px;
+            margin-bottom: var(--sp-2xl);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.25rem, 6vw, 3.75rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.8px;
+            margin-bottom: var(--sp-lg);
+            color: var(--color-text-primary);
+        }
+
+        .hero h1 strong {
+            color: var(--color-accent-primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: var(--sp-xl);
+            font-weight: 400;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: var(--sp-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--sp-2xl);
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: -0.2px;
+        }
+
+        .btn-primary {
+            background: var(--color-accent-primary);
+            color: var(--color-bg-primary);
+            box-shadow: 0 0 20px rgba(113, 112, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-secondary);
+            box-shadow: 0 0 30px rgba(113, 112, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border: 1.5px solid var(--color-border-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-accent-primary);
+            color: var(--color-accent-primary);
+            background: rgba(113, 112, 255, 0.08);
+        }
+
+        /* Hero Visual: Layered Interface Stack */
+        .hero-visual {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            height: 520px;
+            perspective: 1200px;
+            z-index: 2;
+        }
+
+        /* Layer 1: Base interface (website dashboard) */
+        .interface-layer {
+            position: absolute;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(2px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .layer-1 {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Layer 2: Offset layer with slightly different content */
+        .layer-2 {
+            width: 90%;
+            height: 95%;
+            top: -30px;
+            right: -40px;
+            z-index: 2;
+            box-shadow: var(--shadow-md);
+            background: var(--color-bg-tertiary);
+        }
+
+        /* Layer 3: Glass morphism accent layer */
+        .layer-3 {
+            width: 70%;
+            height: 85%;
+            top: -60px;
+            right: -60px;
+            z-index: 3;
+            background: rgba(15, 16, 18, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Interface content: simplified mockup */
+        .interface-content {
+            padding: var(--sp-lg) var(--sp-xl);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .interface-header {
+            display: flex;
+            gap: var(--sp-md);
+            margin-bottom: var(--sp-lg);
+            align-items: center;
+            padding-bottom: var(--sp-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--color-accent-primary);
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .header-text h3 {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-text p {
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+
+        /* Content preview */
+        .content-preview {
+            display: grid;
+            gap: var(--sp-md);
+        }
+
+        .preview-item {
+            display: flex;
+            gap: var(--sp-md);
+            padding: var(--sp-md);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .preview-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-bg-accent);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        .preview-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .preview-text strong {
+            font-size: 0.85rem;
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        .preview-text span {
+            font-size: 0.8rem;
+            color: var(--color-text-tertiary);
+        }
+
+        /* Responsive adjustments for hero visual */
+        @media (max-width: 1024px) {
+            .hero-visual {
+                height: 420px;
+            }
+
+            .layer-2 {
+                right: -30px;
+                top: -20px;
+                width: 92%;
+                height: 96%;
+            }
+
+            .layer-3 {
+                right: -45px;
+                top: -45px;
+                width: 75%;
+                height: 90%;
+            }
+        }
+
+        /* Transition Section */
+        .transition {
+            height: 200px;
+            background: linear-gradient(
+                180deg,
+                var(--color-bg-primary) 0%,
+                var(--color-bg-secondary) 50%,
+                var(--color-bg-primary) 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .transition::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--color-border),
+                transparent
+            );
+        }
+
+        /* Resultado Section */
+        .resultado {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--sp-2xl) var(--sp-lg);
+            position: relative;
+            z-index: 2;
+        }
+
+        .resultado h2 {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 700;
+            margin-bottom: var(--sp-md);
+            color: var(--color-text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .resultado-intro {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--sp-2xl);
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        .resultado-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--sp-lg);
+        }
+
+        .resultado-item {
+            padding: var(--sp-lg);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resultado-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--color-accent-primary),
+                transparent
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .resultado-item:hover {
+            background: var(--color-bg-tertiary);
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 20px rgba(113, 112, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .resultado-item:hover::before {
+            opacity: 1;
+        }
+
+        .resultado-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--sp-sm);
+            letter-spacing: -0.2px;
+        }
+
+        .resultado-item p {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: var(--sp-sm) var(--sp-md);
+            }
+
+            nav {
+                display: none;
+            }
+
+            .hero {
+                margin-top: 50px;
+                padding: var(--sp-lg) var(--sp-md);
+                min-height: auto;
+            }
+
+            .hero h1 {
+                font-size: 1.875rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-visual {
+                height: 360px;
+                margin-top: var(--sp-lg);
+            }
+
+            .interface-content {
+                padding: var(--sp-md) var(--sp-lg);
+            }
+
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .resultado {
+                padding: var(--sp-lg) var(--sp-md);
+            }
+
+            .resultado h2 {
+                font-size: 1.75rem;
+            }
+
+            .resultado-grid {
+                grid-template-columns: 1fr;
+                gap: var(--sp-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .hero-visual {
+                height: 300px;
+            }
+
+            .interface-content {
+                padding: var(--sp-md);
+            }
+
+            .preview-item {
+                padding: var(--sp-sm);
+            }
+
+            .resultado h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Cliente Zero</div>
+            <nav>
+                <a href="#resultado">O que você recebe</a>
+                <a href="#oferta">Oferta</a>
+                <a href="#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Site profissional para sua empresa, <strong>moderno e convertendo</strong>, sem mensalidade.</h1>
+
+            <p class="hero-subtitle">Eu crio presença digital premium para negócios que precisam aparecer profissionais, gerar confiança e converter contatos direto no WhatsApp.</p>
+
+            <div class="cta-group">
+                <a href="https://wa.me/556299291555?text=Olá! Gostaria de criar um site para meu negócio." class="btn btn-primary" target="_blank">
+                    Solicitar meu site
+                </a>
+                <a href="#resultado" class="btn btn-secondary">
+                    Ver como funciona
+                </a>
+            </div>
+        </div>
+
+        <!-- Layered Visual: Interface Stack -->
+        <div class="hero-visual">
+            <!-- Layer 1: Base -->
+            <div class="interface-layer layer-1">
+                <div class="interface-content">
+                    <div class="interface-header">
+                        <div class="header-logo"></div>
+                        <div class="header-text">
+                            <h3>Seu negócio online</h3>
+                            <p>Profissional e responsivo</p>
+                        </div>
+                    </div>
+                    <div class="content-preview">
+                        <div class="preview-item">
+                            <div class="preview-icon"></div>
+                            <div class="preview-text">
+                                <strong>Layout limpo</strong>
+                                <span>Foco no que importa</span>
+                            </div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-icon"></div>
+                            <div class="preview-text">
+                                <strong>Velocidade máxima</strong>
+                                <span>Otimizado para conversão</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 2: Overlay -->
+            <div class="interface-layer layer-2">
+                <div class="interface-content">
+                    <div class="interface-header">
+                        <div class="header-logo"></div>
+                        <div class="header-text">
+                            <h3>Domínio próprio</h3>
+                            <p>Sua marca, seu endereço</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 3: Glassmorphism accent -->
+            <div class="interface-layer layer-3"></div>
+        </div>
+    </section>
+
+    <!-- Transition -->
+    <section class="transition"></section>
+
+    <!-- Resultado Section -->
+    <section class="resultado" id="resultado">
+        <h2>O que você recebe</h2>
+        <p class="resultado-intro">
+            Um site completo que funciona, que vende e que você nem precisa de hospedagem mensal. Seu negócio fica pronto para receber clientes de verdade.
+        </p>
+
+        <div class="resultado-grid">
+            <div class="resultado-item">
+                <h3>Site responsivo</h3>
+                <p>Funciona perfeitamente em desktop, tablet e celular. Seus clientes encontram você em qualquer dispositivo, em qualquer lugar.</p>
+            </div>
+            <div class="resultado-item">
+                <h3>Domínio próprio</h3>
+                <p>Seu site fica no endereço da sua empresa. Mais profissional, mais credibilidade, mais fácil de lembrar e compartilhar.</p>
+            </div>
+            <div class="resultado-item">
+                <h3>WhatsApp integrado</h3>
+                <p>Visitante clica e já conversa com você. Sem formulário, sem espera, sem complicação. Contato direto e imediato.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

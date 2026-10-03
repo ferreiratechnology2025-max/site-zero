@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente Zero - Editorial Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* STRIPE DESIGN SYSTEM TOKENS */
+        :root {
+            /* Colors (Stripe palette) */
+            --color-white: #ffffff;
+            --color-navy: #061b31;
+            --color-purple: #533afd;
+            --color-purple-hover: #4434d4;
+            --color-body-text: #64748d;
+            --color-secondary: #8a8f98;
+            --color-surface-light: #f8f9fa;
+            --color-border: #e2e8f0;
+
+            /* Typography (sohne-var approximation via Helvetica/Arial) */
+            --font-display: 'system-ui', -apple-system, sans-serif;
+            --font-body: 'system-ui', -apple-system, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Courier New', monospace;
+
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+
+            /* Shadows (Stripe's signature blue-tinted) */
+            --shadow-sm: 0 1px 2px rgba(50, 50, 93, 0.08);
+            --shadow-md: 0 4px 8px rgba(50, 50, 93, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 24px rgba(50, 50, 93, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+
+            /* Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-white);
+            color: var(--color-navy);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-sm) var(--spacing-lg);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--color-navy);
+        }
+
+        nav {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--color-body-text);
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--color-navy);
+        }
+
+        /* Hero */
+        .hero {
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            align-items: center;
+            padding: var(--spacing-2xl);
+            background: linear-gradient(135deg, #fafbfc 0%, #f3f4f6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(83, 58, 253, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-text {
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -1px;
+            color: var(--color-navy);
+        }
+
+        .hero h1 em {
+            color: var(--color-purple);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--color-body-text);
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.8;
+        }
+
+        .cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .btn-primary {
+            background: var(--color-purple);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-purple-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-purple);
+            border: 1.5px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-surface-light);
+            border-color: var(--color-body-text);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .browser-frame {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .browser-chrome {
+            background: #f3f4f6;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.75rem;
+            color: var(--color-secondary);
+            font-family: var(--font-mono);
+        }
+
+        .browser-content {
+            padding: var(--spacing-xl);
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .browser-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-navy);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .browser-content p {
+            font-size: 0.95rem;
+            color: var(--color-body-text);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .browser-button {
+            width: fit-content;
+            padding: 0.75rem 1.5rem;
+            background: var(--color-purple);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+        }
+
+        /* Resultado Section */
+        .resultado {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl);
+        }
+
+        .resultado h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-navy);
+        }
+
+        .resultado-intro {
+            font-size: 1.1rem;
+            color: var(--color-body-text);
+            margin-bottom: var(--spacing-2xl);
+            max-width: 700px;
+        }
+
+        .resultado-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .resultado-item {
+            padding: var(--spacing-lg);
+            background: var(--color-surface-light);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s;
+        }
+
+        .resultado-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .resultado-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-navy);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .resultado-item p {
+            font-size: 0.95rem;
+            color: var(--color-body-text);
+            line-height: 1.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
+            }
+
+            .hero-visual {
+                height: 400px;
+            }
+
+            .browser-content {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: var(--spacing-sm);
+            }
+
+            nav {
+                display: none;
+            }
+
+            .hero {
+                margin-top: 50px;
+                min-height: auto;
+                padding: var(--spacing-lg) var(--spacing-md);
+                gap: var(--spacing-lg);
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-visual {
+                height: 350px;
+            }
+
+            .browser-frame {
+                max-width: 100%;
+            }
+
+            .resultado {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+
+            .resultado h2 {
+                font-size: 2rem;
+            }
+
+            .resultado-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-visual {
+                height: 300px;
+            }
+
+            .browser-content {
+                padding: var(--spacing-md);
+                height: 250px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Cliente Zero</div>
+            <nav>
+                <a href="#resultado">O que você recebe</a>
+                <a href="#oferta">Oferta</a>
+                <a href="#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Site profissional para sua empresa, <em>rápido e moderno</em>, sem mensalidade de hospedagem.</h1>
+
+            <p>Eu crio sites premium para negócios que precisam de uma presença digital bonita, confiável e pronta para gerar contato no WhatsApp.</p>
+
+            <div class="cta-group">
+                <a href="https://wa.me/556299291555?text=Olá! Gostaria de criar um site para meu negócio." class="btn btn-primary" target="_blank">
+                    Solicitar meu site
+                </a>
+                <a href="#resultado" class="btn btn-secondary">
+                    Ver como funciona
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="browser-frame">
+                <div class="browser-chrome">
+                    cliente-zero.com.br
+                </div>
+                <div class="browser-content">
+                    <h2>Site profissional</h2>
+                    <p>Rápido, moderno, pronto para convertendo contatos no WhatsApp</p>
+                    <button class="browser-button">Saiba mais</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultado Section (início) -->
+    <section class="resultado" id="resultado">
+        <h2>O que você recebe</h2>
+        <p class="resultado-intro">
+            Seu site fica pronto para receber clientes, aparecer em buscas e funcionar perfeitamente em qualquer dispositivo.
+        </p>
+
+        <div class="resultado-grid">
+            <div class="resultado-item">
+                <h3>Site responsivo</h3>
+                <p>Funciona perfeito em desktop, tablet e celular. Seus clientes encontram seu negócio em qualquer lugar.</p>
+            </div>
+            <div class="resultado-item">
+                <h3>Domínio próprio</h3>
+                <p>Seu site fica no endereço da sua empresa. Mais profissional, mais credibilidade.</p>
+            </div>
+            <div class="resultado-item">
+                <h3>WhatsApp integrado</h3>
+                <p>Visitante clica e já conversa com você. Sem formulário, sem espera. Direto.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
